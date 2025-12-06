@@ -42,11 +42,21 @@ class Lesson extends Model implements HasMedia
     // - video: single file collection 'videos'
     // - attachments: collection 'attachments'
     public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection('videos')->singleFile();
-        $this->addMediaCollection('attachments');
-        $this->addMediaCollection('images');
-    }
+{
+    $this
+        ->addMediaCollection('videos')
+        ->useDisk('public') // store locally
+        ->singleFile();
+
+    $this
+        ->addMediaCollection('attachments')
+        ->useDisk('public');
+
+    $this
+        ->addMediaCollection('images')
+        ->useDisk('public');
+}
+
 
     // Render markdown to HTML (league/commonmark)
 

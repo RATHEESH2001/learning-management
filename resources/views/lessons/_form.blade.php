@@ -31,10 +31,10 @@
     @endif
 </div>
 
-<div class="mb-3">
+{{-- <div class="mb-3">
     <label class="form-label" for="video_url">Video URL (optional)</label>
     <input id="video_url" name="video_url" value="{{ old('video_url', $lesson->video_url) }}" class="form-control" placeholder="https://...">
-</div>
+</div> --}}
 
 <div class="mb-3">
     <label class="form-label" for="duration_seconds">Duration (seconds)</label>

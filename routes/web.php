@@ -6,6 +6,7 @@ use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\LessonController;
+use App\Http\Controllers\RoleController;
 
 /*
 | Public routes (catalog)
@@ -14,7 +15,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/courses', [CourseController::class, 'indexPublic'])->name('courses.indexPublic');
 
 /*
 | Auth protected routes (admin / management)
@@ -36,16 +36,33 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/checkout/cancel',  [SubscriptionController::class, 'cancel'])->name('checkout.cancel');
 
     // Courses admin/resource routes (except public show)
-    Route::resource('courses', CourseController::class);
-    // ->except(['show'])
-    // Modules & lessons (nested resources as needed)
-    Route::resource('courses.modules', ModuleController::class)->shallow();
-    Route::resource('modules.lessons', LessonController::class)->shallow();
+
 
     // optional route to delete a media item in lessons
     Route::delete('lessons/{lesson}/media/{mediaId}', [LessonController::class, 'removeAttachment'])
          ->name('lessons.media.destroy');
 });
 Route::get('/courses/{slug}', [CourseController::class, 'showPublic'])->name('courses.showPublic');
+Route::get('/courseui', [CourseController::class, 'indexPublic'])->name('courses.indexPublic');
 
+Route::middleware(['auth', 'role:admin'])->group(function () {
+  Route::resource('courses', CourseController::class);
+    // ->except(['show'])
+    // Modules & lessons (nested resources as needed)
+    Route::resource('courses.modules', ModuleController::class)->shallow();
+    Route::resource('modules.lessons', LessonController::class)->shallow();
+});
+
+Route::middleware(['auth', 'role:instructor'])->group(function () {
+
+});
+
+Route::middleware(['auth', 'role:user'])->group(function () {
+
+});
+
+Route::resource('roles', RoleController::class);
 require __DIR__.'/auth.php';
+
+
+

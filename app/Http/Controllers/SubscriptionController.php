@@ -77,8 +77,8 @@ try {
         'line_items' => [[ 'price' => $priceId, 'quantity' => 1 ]],
         'customer_email' => $user->email,
         'client_reference_id' => $user->id,
-            'success_url' => route('layouts.subscription.success') . '?session_id={CHECKOUT_SESSION_ID}',
-            'cancel_url'  => route('layouts.subscription.cancel'),
+            'success_url' => route('checkout.success') . '?session_id={CHECKOUT_SESSION_ID}',
+            'cancel_url'  => route('checkout.cancel'),
     ]);
 
     return response()->json(['id' => $session->id]);

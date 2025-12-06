@@ -69,7 +69,11 @@ document.addEventListener('DOMContentLoaded', function () {
 </html> --}}
 
 {{-- resources/views/layouts/subscription/checkout.blade.php --}}
-<x-app-layout>
+@extends('layouts.app')
+
+@section('title', 'Lessons')
+
+@section('content')
   <div class="max-w-2xl mx-auto py-10">
     <div class="bg-white p-6 rounded shadow text-center">
       <h2>Subscribe — Monthly Plan</h2>
@@ -109,5 +113,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (error) alert(error.message);
   });
   </script>
-</x-app-layout>
+@endsection
+
 

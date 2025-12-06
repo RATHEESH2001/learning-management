@@ -51,7 +51,7 @@ class CourseController extends Controller
             ->paginate(12)
             ->withQueryString();
 
-        return view('courses.index_public', compact('courses', 'q')); // public view
+        return view('courseui.index', compact('courses', 'q')); // public view
     }
 
     /**
@@ -158,7 +158,7 @@ public function store(CourseRequest $request)
         $course->load(['modules' => fn($q) => $q->orderBy('position')]);
         return view('course.show', compact('course'));
     }
- 
+
     /**
      * Public show by slug (route: /courses/{slug})
      */

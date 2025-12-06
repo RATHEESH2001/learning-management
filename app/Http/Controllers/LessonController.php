@@ -47,9 +47,13 @@ class LessonController extends Controller
 
         // handle video file upload (Spatie medialibrary)
         if ($request->hasFile('video')) {
-            $lesson->addMediaFromRequest('video')->toMediaCollection('videos');
-            // optionally set video_path to media url or disk path
-            $lesson->video_path = $lesson->getFirstMediaUrl('videos') ?: null;
+            // $lesson->addMediaFromRequest('video')->toMediaCollection('videos');
+            // // optionally set video_path to media url or disk path
+            // $lesson->video_path = $lesson->getFirstMediaUrl('videos') ?: null;
+            $media = $lesson->addMediaFromRequest('video')->toMediaCollection('videos');
+        $lesson->video_path = $media->getUrl(); // stores full local /storage path
+        $lesson->save();
+
         }
 
         // handle attachments (multiple)
@@ -97,8 +101,9 @@ class LessonController extends Controller
         if ($request->hasFile('video')) {
             // remove previous video if any
             $lesson->clearMediaCollection('videos');
-            $lesson->addMediaFromRequest('video')->toMediaCollection('videos');
-            $lesson->video_path = $lesson->getFirstMediaUrl('videos') ?: null;
+              $media = $lesson->addMediaFromRequest('video')->toMediaCollection('videos');
+            $lesson->video_path = $media->getUrl(); // stores full local /storage path
+            $lesson->save();
         }
 
         // add new attachments (keep existing)

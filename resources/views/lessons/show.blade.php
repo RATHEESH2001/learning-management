@@ -5,7 +5,7 @@
 
 @section('content')
 <div class="container py-4">
-    <a href="{{ url()->previous() }}" class="btn btn-sm btn-outline-secondary mb-3">Back</a>
+    {{-- <a href="{{ url()->previous() }}" class="btn btn-sm btn-outline-secondary mb-3">Back</a> --}}
 
     <h1>{{ $lesson->title }}</h1>
 
@@ -22,7 +22,7 @@
     </p>
 
     {{-- Video (media) --}}
-    @if($lesson->getFirstMediaUrl('videos'))
+    {{-- @if($lesson->getFirstMediaUrl('videos'))
         <div class="mb-4">
             <video controls style="max-width:100%">
                 <source src="{{ $lesson->getFirstMediaUrl('videos') }}" type="video/mp4">
@@ -35,7 +35,59 @@
                 <iframe src="{{ $lesson->video_url }}" frameborder="0" allowfullscreen></iframe>
             </div>
         </div>
-    @endif
+    @endif --}}
+    {{-- @if($lesson->video_path)
+    <video controls style="max-width:100%">
+        <source src="{{ asset($lesson->video_path) }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+@endif --}}
+
+    @if($lesson->getFirstMediaUrl('videos'))
+    <div class="mb-4">
+        <video controls style="max-width:100%">
+            <source src="{{ $lesson->getFirstMediaUrl('videos') }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+@elseif($lesson->video_url)
+    @php
+        $raw = trim($lesson->video_url);
+
+        // Normalize common YouTube formats to embed URL
+        if (preg_match('#(?:https?://)?(?:www\.)?youtube\.com/watch\?v=([A-Za-z0-9_-]+)#i', $raw, $m)) {
+            $embedUrl = 'https://www.youtube.com/embed/' . $m[1];
+        }
+        // Short youtu.be links
+        elseif (preg_match('#(?:https?://)?youtu\.be/([A-Za-z0-9_-]+)#i', $raw, $m)) {
+            $embedUrl = 'https://www.youtube.com/embed/' . $m[1];
+        }
+        // Vimeo (basic support)
+        elseif (preg_match('#(?:https?://)?(?:www\.)?vimeo\.com/([0-9]+)#i', $raw, $m)) {
+            $embedUrl = 'https://player.vimeo.com/video/' . $m[1];
+        }
+        // Already an embed link (naive check)
+        elseif (str_contains($raw, '/embed/') || str_contains($raw, 'player.vimeo.com')) {
+            $embedUrl = $raw;
+        }
+        // Fallback — try to use raw URL (may be blocked)
+        else {
+            $embedUrl = $raw;
+        }
+    @endphp
+
+    <div class="mb-4">
+        <div class="ratio ratio-16x9">
+            <iframe
+                src="{{ $embedUrl }}"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+            ></iframe>
+        </div>
+    </div>
+@endif
+
 
     {{-- Content rendered from Markdown accessor --}}
     <div class="lesson-content mb-4">
